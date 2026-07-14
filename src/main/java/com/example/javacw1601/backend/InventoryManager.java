@@ -65,4 +65,15 @@ public class InventoryManager {
     public boolean deleteItem(String code) {
         return items.removeIf(inv -> inv.getCode().equalsIgnoreCase(code));
     }
+
+
+    public ArrayList<Inventory> getLowStockItems(int threshold) {
+        ArrayList<Inventory> lowStock = new ArrayList<>();
+        for (Inventory inv : items) {
+            if (inv.getQuantity() < threshold) {
+                lowStock.add(inv);
+            }
+        }
+        return lowStock;
+    }
 }
