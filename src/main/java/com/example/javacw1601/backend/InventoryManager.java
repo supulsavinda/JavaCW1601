@@ -76,4 +76,38 @@ public class InventoryManager {
         }
         return lowStock;
     }
+
+
+    private void bSortByCode(ArrayList<Inventory> list) {
+        int n= list.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1; j++) {
+                if (list.get(j).getCode().compareTo(list.get(j + 1).getCode())>0) {
+                    Inventory temp = list.get(j);
+                    list.set(j, list.get(j + 1));
+                    list.set(j + 1, temp);
+                }
+            }
+        }
+    }
+
+    public ArrayList<Inventory> getSortedItems() {
+        Set<String> categorySet = new HashSet<>();
+        for (Inventory inv : items) {
+            categorySet.add(inv.getCategory().toLowerCase());
+        }
+        ArrayList<Inventory> result = new ArrayList<>();
+
+        for (String cat :  categorySet) {
+            ArrayList<Inventory> sublist = new ArrayList<>();
+            for (Inventory inv : items) {
+                if (inv.getCategory().equalsIgnoreCase(cat)) {
+                    sublist.add(inv);
+                }
+            }
+            bSortByCode(sublist);
+            result.addAll(sublist);
+        }
+        return result;
+    }
 }
