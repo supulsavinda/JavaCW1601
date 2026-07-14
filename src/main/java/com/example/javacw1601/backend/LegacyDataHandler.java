@@ -1,8 +1,6 @@
 package com.example.javacw1601.backend;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -113,5 +111,24 @@ public class LegacyDataHandler {
             } catch(DateTimeParseException ignored){}
         }
         return norDate;
+    }
+
+    public static void saveInventory(String filePath, ArrayList<Inventory> items) {
+        try (PrintWriter bw = new PrintWriter(new FileWriter(filePath))) {
+            for (Inventory item : items) {
+                bw.printf("%s, %s, %s, Rs.%.2f, %d, %s, %s, %s%n",
+                        item.getCode(),
+                        item.getName(),
+                        item.getBrand(),
+                        item.getPrice(),
+                        item.getQuantity(),
+                        item.getCategory(),
+                        item.getDate(),
+                        item.getImage()
+                );
+            }
+        }catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
     }
 }
