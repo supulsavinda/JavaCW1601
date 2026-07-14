@@ -4,7 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class LegacyDataHandler {
     public static String[][] loadData(String filePath, int noElements) {
@@ -27,11 +32,8 @@ public class LegacyDataHandler {
 
     private static String[][] txt_formatter(String[] lst, int no_elements) {
         String[][] elements = new String[lst.length][no_elements];
-        Pattern datePattern = Pattern.compile("([A-Za-z]+\\s+\\d{1,2}),\\s*(\\d{4})");
-
         for (int i = 0; i < lst.length; i++) {
-            String line = datePattern.matcher(lst[i]).replaceAll("$1 $2");
-            String[] component = line.split("[,|;]", -1);
+            String[] component = lst[i].split("[,|;]", -1);
 
             for (int j = 0; j < no_elements; j++) {
                 if (j < component.length) {
@@ -54,7 +56,9 @@ public class LegacyDataHandler {
                 String name = grid[i][1];
                 String brand = grid[i][2];
 
-                String cleanPrice = grid[i][3].replace("Rs.", "").trim();
+                String cleanPrice = grid[i][3];
+                cleanPrice = cleanPrice.replaceAll("(?i)rs\\.?\\s*", "").replaceAll("(?i)lkr\\.?\\s*", "");
+                cleanPrice = cleanPrice.replaceAll("[^\\d.]", "");
                 double price = Double.parseDouble(cleanPrice);
 
                 int quantity = Integer.parseInt(grid[i][4]);
@@ -87,5 +91,27 @@ public class LegacyDataHandler {
             }
         }
         return dealerList;
+    }
+
+    private static String normalizeDate(String norDate){
+        norDate = norDate.trim();
+        if(norDate.isEmpty()) return "Unknown";
+        List<DateTimeFormatter> formatters = Arrays.asList(
+                DateTimeFormatter.ISO_LOCAL_DATE,
+                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+                DateTimeFormatter.ofPattern("MM/dd/yyyy"),
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy"),
+                DateTimeFormatter.ofPattern("dd-MMM-yyyy"),
+                DateTimeFormatter.ofPattern("MMM d, yyyy"),
+                DateTimeFormatter.ofPattern("MMM dd, yyyy")
+        );
+        for(DateTimeFormatter fmt : formatters){
+            try{
+                LocalDate date = LocalDate.parse(norDate, fmt);
+                return date.toString();
+            } catch(DateTimeParseException ignored){}
+        }
+        return norDate;
     }
 }
