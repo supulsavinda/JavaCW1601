@@ -110,4 +110,31 @@ public class InventoryManager {
         }
         return result;
     }
+
+    public ArrayList<Inventory> search(String category, double minPrice, double maxPrice, String keyword) {
+        ArrayList<Inventory> result = new ArrayList<>();
+        for (Inventory inv : items) {
+            boolean match = true;
+            if (category!=null && !category.trim().isEmpty() && !category.equalsIgnoreCase("All")) {
+                if (!inv.getCategory().equalsIgnoreCase(category)) {
+                    match = false;
+                }
+            }
+            if (minPrice<= maxPrice){
+                if (inv.getPrice() < minPrice || inv.getPrice()>maxPrice) {
+                    match = false;
+                }
+            }
+            if (keyword!=null && !keyword.trim().isEmpty()) {
+                String lowerKeyword = keyword.toLowerCase();
+                if(!inv.getName().toLowerCase().contains(lowerKeyword) && !inv.getBrand().toLowerCase().contains(lowerKeyword)){
+                    match = false;
+                }
+            }
+            if (match) {
+                result.add(inv);
+            }
+        }
+        return result;
+    }
 }
