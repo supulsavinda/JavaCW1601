@@ -4,6 +4,7 @@ import com.example.javacw1601.backend.Inventory;
 import com.example.javacw1601.backend.Dealers;
 import com.example.javacw1601.backend.LegacyDataHandler;
 import com.example.javacw1601.backend.InventoryManager;
+import com.example.javacw1601.backend.DealerManager;
 import java.util.ArrayList;
 
 public class Main {
