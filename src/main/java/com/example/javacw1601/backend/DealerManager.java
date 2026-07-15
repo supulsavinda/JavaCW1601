@@ -3,6 +3,7 @@ package com.example.javacw1601.backend;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 public class DealerManager {
     private ArrayList<Dealers> allDealers;
@@ -33,5 +34,23 @@ public class DealerManager {
                 }
             }
         }
+    }
+
+    public ArrayList<Dealers> select4Random() {
+        if(allDealers.size() < 4) {
+            throw new IllegalStateException("Not enough dealers");
+        }
+        Random rand = new Random();
+        ArrayList<Integer> chosenIndices = new ArrayList<>();
+        ArrayList<Dealers> selected = new ArrayList<>();
+        while(selected.size() < 4) {
+            int index = rand.nextInt(allDealers.size());
+            if(!chosenIndices.contains(index)) {
+                chosenIndices.add(index);
+                selected.add(allDealers.get(index));
+            }
+        }
+    bSortByLocation(selected);
+    return selected;
     }
 }
