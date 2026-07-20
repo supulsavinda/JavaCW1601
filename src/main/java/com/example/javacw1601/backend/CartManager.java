@@ -53,5 +53,24 @@ public class CartManager {
         }
         return false;
     }
+
+    public double calculateTotal(){
+        if (cart.isEmpty()) return 0.0;
+        double subtotal = 0.0;
+        boolean hasEngine = false, hasElectrical = false;
+
+        for (CartItem ci : cart) {
+            Inventory item =  ci.getItem();
+            int qty = ci.getQuantity();
+            double itemTotal = item.getPrice() * qty;
+            if (qty >= 3) itemTotal *= 0.95;
+            subtotal += itemTotal;
+            String cat = item.getCategory().toLowerCase();
+            if (cat.equals("engine")) hasEngine = true;
+            if (cat.equals("electrical")) hasElectrical = true;
+        }
+        if (hasEngine && hasElectrical) subtotal *= 0.9;
+        return subtotal;
+    }
 }
 
