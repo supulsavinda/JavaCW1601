@@ -72,5 +72,18 @@ public class CartManager {
         if (hasEngine && hasElectrical) subtotal *= 0.9;
         return subtotal;
     }
+
+    public double checkout(){
+        if (cart.isEmpty()) return 0.0;
+        double total = calculateTotal();
+        for (CartItem ci : cart) {
+            Inventory item =  ci.getItem();
+            item.setQuantity(item.getQuantity() - ci.getQuantity());
+        }
+        auditLogger.logCheckout(cart, total);
+        LegacyDataHandler.saveInventory("inventory_legacy.txt", inventoryManager.getAllItems());
+        cart.clear();
+        return total;
+    }
 }
 
