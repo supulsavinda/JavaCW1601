@@ -61,7 +61,7 @@ public class LegacyDataHandler {
 
                 int quantity = Integer.parseInt(grid[i][4]);
                 String category = grid[i][5];
-                String dateAdded = grid[i][6];
+                String dateAdded = normalizeDate(grid[i][6]);
                 String image = grid[i][7].isEmpty() ? "no_image.png" : grid[i][7];
 
                 itemList.add(new Inventory(partCode, name, brand, price, quantity, category, dateAdded, image));

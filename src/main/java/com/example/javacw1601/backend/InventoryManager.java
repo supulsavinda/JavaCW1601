@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class InventoryManager {
     private ArrayList<Inventory> items;
+    private int lowStockThreshold;
 
     public InventoryManager() {
         items = new ArrayList<>();
@@ -15,9 +16,16 @@ public class InventoryManager {
         this.items = initialList;
     }
 
+    public int getLowStockThreshold() {
+        return lowStockThreshold;
+    }
 
-    public ArrayList<Inventory> getAllItems() {
-        return new ArrayList<>(items);
+    public void setLowStockThreshold(int threshold) {
+        if (threshold >= 0)this.lowStockThreshold = threshold;
+    }
+
+    public ArrayList<Inventory> getLowStockItems() {
+        return getLowStockItems(lowStockThreshold);
     }
 
     public int getTotalCount() {
