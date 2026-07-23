@@ -31,7 +31,7 @@ public class LegacyDataHandler {
     private static String[][] txt_formatter(String[] lst, int no_elements) {
         String[][] elements = new String[lst.length][no_elements];
         for (int i = 0; i < lst.length; i++) {
-            String[] component = lst[i].split("[,|;]", -1);
+            String[] component = lst[i].split("(?!(?<=\\d{1,2})(?=,\\s?\\d{4}\\b)),|[|;]", -1);
 
             for (int j = 0; j < no_elements; j++) {
                 if (j < component.length) {

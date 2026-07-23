@@ -61,7 +61,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.javacw1601/com.example.javacw1601.HelloApplication</mainClass>
+                            <mainClass>com.example.javacw1601/com.example.javacw1601.MainApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

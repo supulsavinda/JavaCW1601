@@ -6,14 +6,14 @@ import java.util.Set;
 
 public class InventoryManager {
     private ArrayList<Inventory> items;
-    private int lowStockThreshold;
+    private int lowStockThreshold = 5;
 
     public InventoryManager() {
         items = new ArrayList<>();
     }
 
     public InventoryManager(ArrayList<Inventory> initialList) {
-        this.items = initialList;
+        this.items = new ArrayList<>(initialList);
     }
 
     public int getLowStockThreshold() {
@@ -26,6 +26,10 @@ public class InventoryManager {
 
     public ArrayList<Inventory> getLowStockItems() {
         return getLowStockItems(lowStockThreshold);
+    }
+
+    public ArrayList<Inventory> getAllItems() {
+        return new ArrayList<>(items);
     }
 
     public int getTotalCount() {
@@ -89,7 +93,7 @@ public class InventoryManager {
     private void bSortByCode(ArrayList<Inventory> list) {
         int n= list.size();
         for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - 1; j++) {
+            for (int j = 0; j < n - i - 1; j++) {
                 if (list.get(j).getCode().compareTo(list.get(j + 1).getCode())>0) {
                     Inventory temp = list.get(j);
                     list.set(j, list.get(j + 1));

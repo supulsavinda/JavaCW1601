@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.javacw1601.controllers.MainController">
+
+    <top>
+        <VBox spacing="5" style="-fx-background-color: #2c3e50; -fx-padding: 10;">
+            <Label text="Malabe Tuk-Tuk &amp; Three-Wheeler Spares Depot"
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Low-Stock Threshold:" style="-fx-text-fill: white;"/>
+                <TextField fx:id="txtThreshold" prefWidth="60" text="5"/>
+                <Button text="Refresh" fx:id="btnRefresh" onAction="#handleRefresh"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+                <Label text="Low Stock Items:" style="-fx-text-fill: white; -fx-padding: 0 0 0 20;"/>
+                <ListView fx:id="lowStockList" prefHeight="40" prefWidth="300" style="-fx-background-color: #ecf0f1;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.60">
+
+            <VBox spacing="5" style="-fx-padding: 10;">
+                <Label text="Inventory" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <TableView fx:id="inventoryTable" prefHeight="400">
+                    <columns>
+                        <TableColumn fx:id="colCode" text="Code" prefWidth="70"/>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="140"/>
+                        <TableColumn fx:id="colBrand" text="Brand" prefWidth="100"/>
+                        <TableColumn fx:id="colPrice" text="Price (Rs.)" prefWidth="90"/>
+                        <TableColumn fx:id="colQuantity" text="Qty" prefWidth="60"/>
+                        <TableColumn fx:id="colCategory" text="Category" prefWidth="100"/>
+                        <TableColumn fx:id="colDate" text="Date" prefWidth="100"/>
+                        <TableColumn fx:id="colImage" text="Image" prefWidth="80"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="20">
+                    <Label fx:id="lblTotalCount" text="Total Items: 0" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="lblTotalValue" text="Total Value: Rs.0.00" style="-fx-font-weight: bold;"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Search:"/>
+                    <ComboBox fx:id="cmbCategory" prefWidth="100"/>
+                    <TextField fx:id="txtMinPrice" prefWidth="80" promptText="Min Price"/>
+                    <TextField fx:id="txtMaxPrice" prefWidth="80" promptText="Max Price"/>
+                    <TextField fx:id="txtSearchKeyword" prefWidth="120" promptText="Keyword"/>
+                    <Button text="Search" fx:id="btnSearch" onAction="#handleSearch"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                    <Button text="Clear" onAction="#handleRefresh"
+                            style="-fx-background-color: #e67e22; -fx-text-fill: white;"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="8" style="-fx-padding: 10;">
+
+                <Label text="Item Details" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <GridPane hgap="8" vgap="5">
+                    <Label text="Code:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="txtCode" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="120"/>
+                    <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="120"/>
+                    <Label text="Brand:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="txtBrand" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="120"/>
+                    <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <TextField fx:id="txtPrice" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="120"/>
+                    <Label text="Qty:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <TextField fx:id="txtQuantity" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="120"/>
+                    <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <TextField fx:id="txtCategory" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="120"/>
+                    <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                    <TextField fx:id="txtDate" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="120"/>
+                    <Label text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                    <TextField fx:id="txtImage" GridPane.columnIndex="1" GridPane.rowIndex="7" prefWidth="120"/>
+                </GridPane>
+
+                <HBox spacing="10">
+                    <Button text="Add" fx:id="btnAdd" onAction="#handleAdd"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-pref-width: 80;"/>
+                    <Button text="Update" fx:id="btnUpdate" onAction="#handleUpdate"
+                            style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-pref-width: 80;"/>
+                    <Button text="Delete" fx:id="btnDelete" onAction="#handleDelete"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-pref-width: 80;"/>
+                </HBox>
+
+                <Separator/>
+
+                <Label text="Dealers" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <HBox spacing="10">
+                    <Button text="Select 4 Random Dealers" fx:id="btnRandomDealers"
+                            onAction="#handleRandomDealers"
+                            style="-fx-background-color: #8e44ad; -fx-text-fill: white;"/>
+                </HBox>
+                <ListView fx:id="dealerList" prefHeight="80"/>
+
+                <Separator/>
+
+                <Label text="Shopping Cart" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <TableView fx:id="cartTable" prefHeight="100">
+                    <columns>
+                        <TableColumn fx:id="colCartCode" text="Code" prefWidth="60"/>
+                        <TableColumn fx:id="colCartName" text="Name" prefWidth="120"/>
+                        <TableColumn fx:id="colCartQty" text="Qty" prefWidth="60"/>
+                        <TableColumn fx:id="colCartPrice" text="Price" prefWidth="80"/>
+                        <TableColumn fx:id="colCartTotal" text="Total" prefWidth="80"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Add to Cart" fx:id="btnAddToCart" onAction="#handleAddToCart"
+                            style="-fx-background-color: #2980b9; -fx-text-fill: white;"/>
+                    <Button text="Remove" fx:id="btnRemoveFromCart" onAction="#handleRemoveFromCart"
+                            style="-fx-background-color: #e67e22; -fx-text-fill: white;"/>
+                    <Button text="Checkout" fx:id="btnCheckout" onAction="#handleCheckout"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblCartTotal" text="Total: Rs.0.00" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                </HBox>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+</BorderPane>
