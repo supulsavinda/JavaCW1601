@@ -134,18 +134,36 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleOpenUpdateItem() {
+        Inventory selected = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item in the table to update.");
+            return;
+        }
+        try {
+            Stage stage = openModal("update-item-view.fxml", "Update Spare Part");
+            FXMLLoader loader = (FXMLLoader) stage.getUserData();
+            UpdateItemController controller = loader.getController();
+            controller.init(inventoryManager, auditLogger, INVENTORY_FILE, selected);
+            stage.showAndWait();
+            refreshInventoryTable();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not open the Update Item window: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleDeleteItem() {
+        // Empty – does nothing
     }
 
     @FXML
     private void handleOpenDealer() {
+        // Empty – does nothing
     }
 
     @FXML
     private void handleOpenCart() {
+        // Empty – does nothing
     }
 
     @FXML
