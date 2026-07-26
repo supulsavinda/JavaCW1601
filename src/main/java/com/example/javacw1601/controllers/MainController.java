@@ -19,6 +19,7 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -100,6 +101,15 @@ public class MainController implements Initializable {
         alert.showAndWait();
     }
 
+    private boolean showConfirm(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
     private Stage openModal(String fxml, String title) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/" + fxml));
         Parent root = loader.load();
@@ -153,7 +163,23 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleDeleteItem() {
-        // Empty – does nothing
+        Inventory selected = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item in the table to delete.");
+            return;
+        }
+        if (!showConfirm("Delete Item", "Delete \"" + selected.getName() + "\" (" + selected.getCode() + ") from the inventory?")) {
+            return;
+        }
+        String code = selected.getCode();
+        if (inventoryManager.deleteItem(code)) {
+            auditLogger.logDeleteItem(code);
+            LegacyDataHandler.saveInventory(INVENTORY_FILE, inventoryManager.getAllItems());
+            refreshInventoryTable();
+            showAlert(Alert.AlertType.INFORMATION, "Deleted", "Item removed from the inventory.");
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete item.");
+        }
     }
 
     @FXML
