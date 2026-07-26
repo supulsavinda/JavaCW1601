@@ -1,6 +1,8 @@
 package com.example.javacw1601.controllers;
 
 import com.example.javacw1601.backend.*;
+import com.example.javacw1601.controllers.AddItemController;
+import com.example.javacw1601.controllers.UpdateItemController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
@@ -25,8 +27,11 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
 
     private static final String INVENTORY_FILE = "inventory_legacy.txt";
+    private static final String DEALER_FILE = "dealers_legacy.txt";
 
     private InventoryManager inventoryManager;
+    private DealerManager dealerManager;
+    private CartManager cartManager;
     private AuditLogger auditLogger;
 
     @FXML private TableView<Inventory> inventoryTable;
@@ -46,7 +51,11 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ArrayList<Inventory> items = LegacyDataHandler.loadItemsList(INVENTORY_FILE);
+        ArrayList<Dealers> dealers = LegacyDataHandler.loadDealersList(DEALER_FILE);
+
         inventoryManager = new InventoryManager(items);
+        dealerManager = new DealerManager(dealers);
+        cartManager = new CartManager(inventoryManager);
         auditLogger = new AuditLogger();
 
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -168,9 +177,10 @@ public class MainController implements Initializable {
             showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item in the table to delete.");
             return;
         }
-        if (!showConfirm("Delete Item", "Delete \"" + selected.getName() + "\" (" + selected.getCode() + ") from the inventory?")) {
-            return;
-        }
+        boolean confirmed = showConfirm("Delete Item",
+                "Delete \"" + selected.getName() + "\" (" + selected.getCode() + ") from the inventory?");
+        if (!confirmed) return;
+
         String code = selected.getCode();
         if (inventoryManager.deleteItem(code)) {
             auditLogger.logDeleteItem(code);
@@ -184,16 +194,35 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleOpenDealer() {
-        // Empty – does nothing
+        try {
+            Stage stage = openModal("dealer-view.fxml", "Dealer Management");
+            FXMLLoader loader = (FXMLLoader) stage.getUserData();
+            DealerController controller = loader.getController();
+            controller.init(dealerManager, auditLogger, DEALER_FILE);
+            stage.showAndWait();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not open the Dealer window: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleOpenCart() {
-        // Empty – does nothing
+        try {
+            Stage stage = openModal("cart-view.fxml", "Shopping Cart & Checkout");
+            FXMLLoader loader = (FXMLLoader) stage.getUserData();
+            CartController controller = loader.getController();
+            controller.init(cartManager, inventoryManager, INVENTORY_FILE);
+            stage.showAndWait();
+            refreshInventoryTable();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not open the Cart window: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleExit() {
-        Platform.exit();
+        if (showConfirm("Exit", "Are you sure you want to exit Malabe Tuk-Tuk Spares?")) {
+            Platform.exit();
+        }
     }
 }
