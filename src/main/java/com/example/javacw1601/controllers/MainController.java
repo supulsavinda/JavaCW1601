@@ -6,10 +6,17 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -17,10 +24,8 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
 
     private static final String INVENTORY_FILE = "inventory_legacy.txt";
-    private static final String DEALER_FILE = "dealers_legacy.txt";
 
     private InventoryManager inventoryManager;
-    private DealerManager dealerManager;
     private AuditLogger auditLogger;
 
     @FXML private TableView<Inventory> inventoryTable;
@@ -40,10 +45,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ArrayList<Inventory> items = LegacyDataHandler.loadItemsList(INVENTORY_FILE);
-        ArrayList<Dealers> dealers = LegacyDataHandler.loadDealersList(DEALER_FILE);
-
         inventoryManager = new InventoryManager(items);
-        dealerManager = new DealerManager(dealers);
         auditLogger = new AuditLogger();
 
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -86,6 +88,31 @@ public class MainController implements Initializable {
         lblLowStockCount.setText("Low Stock: " + inventoryManager.getLowStockItems().size());
     }
 
+    private Window getWindow() {
+        return inventoryTable.getScene().getWindow();
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private Stage openModal(String fxml, String title) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/" + fxml));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.setTitle(title);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(getWindow());
+        stage.setScene(new Scene(root));
+        stage.setResizable(false);
+        stage.setUserData(loader);
+        return stage;
+    }
+
     @FXML
     private void handleRefresh() {
         refreshInventoryTable();
@@ -93,6 +120,16 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleOpenAddItem() {
+        try {
+            Stage stage = openModal("add-item-view.fxml", "Add New Spare Part");
+            FXMLLoader loader = (FXMLLoader) stage.getUserData();
+            AddItemController controller = loader.getController();
+            controller.init(inventoryManager, auditLogger, INVENTORY_FILE);
+            stage.showAndWait();
+            refreshInventoryTable();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not open the Add Item window: " + e.getMessage());
+        }
     }
 
     @FXML
