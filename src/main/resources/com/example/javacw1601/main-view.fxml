@@ -14,7 +14,6 @@
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <!-- Toolbar -->
             <HBox spacing="10.0" alignment="CENTER_LEFT">
                 <Button text="Add Item" onAction="#handleOpenAddItem"/>
                 <Button text="Update Item" onAction="#handleOpenUpdateItem"/>
@@ -27,7 +26,6 @@
                 <Button text="Exit" onAction="#handleExit"/>
             </HBox>
 
-            <!-- Inventory Table -->
             <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="colCode" text="Code" prefWidth="80"/>
@@ -44,7 +42,6 @@
                 </columnResizePolicy>
             </TableView>
 
-            <!-- Status Labels -->
             <HBox spacing="20.0" alignment="CENTER_LEFT">
                 <Label fx:id="lblTotalCount" text="Total Items: 0"/>
                 <Label fx:id="lblTotalValue" text="Total Value: Rs. 0.00"/>
