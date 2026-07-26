@@ -9,8 +9,9 @@ public class Inventory {
     private String category;
     private String date;
     private String image;
+    private int threshold;
 
-    public Inventory(String code, String name, String brand, double price, int quantity, String category, String date, String image) {
+    public Inventory(String code, String name, String brand, double price, int quantity, String category, String date, int threshold, String image) {
         this.code = code;
         this.name = name;
         this.brand = brand;
@@ -18,8 +19,10 @@ public class Inventory {
         this.quantity = quantity;
         this.category = category;
         this.date = date;
+        this.threshold = threshold;
         this.image = image;
     }
+
     public String getCode() {
         return code;
     }
@@ -74,5 +77,16 @@ public class Inventory {
     }
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getThreshold() {
+        return threshold;
+    }
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+    public boolean isLowStock() {
+        return quantity < threshold;
     }
 }

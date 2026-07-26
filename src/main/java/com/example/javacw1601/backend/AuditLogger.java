@@ -38,4 +38,16 @@ public class AuditLogger {
         }
         log(sb.toString());
     }
+
+    public void logAddDealer(Dealers dealer) {
+        log("ADD DEALER | Code: " + dealer.getCode() + " | Name: " + dealer.getName() + " | Location: " + dealer.getLocation());
+    }
+
+    public void logUpdateDealer(String code, Dealers updated) {
+        log("UPDATE DEALER | Code: " + code + " | New name: " + updated.getName() + ", Location: " + updated.getLocation());
+    }
+
+    public void logDeleteDealer(String code) {
+        log("DELETE DEALER | Code: " + code);
+    }
 }

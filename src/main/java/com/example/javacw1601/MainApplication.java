@@ -8,14 +8,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
-        java.net.URL url = MainApplication.class.getResource("/com/example/javacw1601/main-view.fxml");
-        System.out.println("FXML URL: " + url);
-        FXMLLoader fxmlLoader = new FXMLLoader(url);
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Malabe TUK-TUK");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/main-view.fxml"));
+        Scene scene = new Scene(loader.load());
+        stage.setTitle("Malabe Tuk-Tuk Spares");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

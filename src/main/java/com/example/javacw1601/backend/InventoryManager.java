@@ -21,7 +21,7 @@ public class InventoryManager {
     }
 
     public void setLowStockThreshold(int threshold) {
-        if (threshold >= 0)this.lowStockThreshold = threshold;
+        if (threshold >= 0) this.lowStockThreshold = threshold;
     }
 
     public ArrayList<Inventory> getLowStockItems() {
@@ -78,7 +78,6 @@ public class InventoryManager {
         return items.removeIf(inv -> inv.getCode().equalsIgnoreCase(code));
     }
 
-
     public ArrayList<Inventory> getLowStockItems(int threshold) {
         ArrayList<Inventory> lowStock = new ArrayList<>();
         for (Inventory inv : items) {
@@ -89,12 +88,21 @@ public class InventoryManager {
         return lowStock;
     }
 
+    public ArrayList<String> getCategories() {
+        Set<String> categorySet = new HashSet<>();
+        for (Inventory inv : items) {
+            if (inv.getCategory() != null && !inv.getCategory().trim().isEmpty()) {
+                categorySet.add(inv.getCategory());
+            }
+        }
+        return new ArrayList<>(categorySet);
+    }
 
     private void bSortByCode(ArrayList<Inventory> list) {
-        int n= list.size();
+        int n = list.size();
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                if (list.get(j).getCode().compareTo(list.get(j + 1).getCode())>0) {
+                if (list.get(j).getCode().compareTo(list.get(j + 1).getCode()) > 0) {
                     Inventory temp = list.get(j);
                     list.set(j, list.get(j + 1));
                     list.set(j + 1, temp);
@@ -110,7 +118,7 @@ public class InventoryManager {
         }
         ArrayList<Inventory> result = new ArrayList<>();
 
-        for (String cat :  categorySet) {
+        for (String cat : categorySet) {
             ArrayList<Inventory> sublist = new ArrayList<>();
             for (Inventory inv : items) {
                 if (inv.getCategory().equalsIgnoreCase(cat)) {
@@ -127,19 +135,19 @@ public class InventoryManager {
         ArrayList<Inventory> result = new ArrayList<>();
         for (Inventory inv : items) {
             boolean match = true;
-            if (category!=null && !category.trim().isEmpty() && !category.equalsIgnoreCase("All")) {
+            if (category != null && !category.trim().isEmpty() && !category.equalsIgnoreCase("All")) {
                 if (!inv.getCategory().equalsIgnoreCase(category)) {
                     match = false;
                 }
             }
-            if (minPrice<= maxPrice){
-                if (inv.getPrice() < minPrice || inv.getPrice()>maxPrice) {
+            if (minPrice <= maxPrice) {
+                if (inv.getPrice() < minPrice || inv.getPrice() > maxPrice) {
                     match = false;
                 }
             }
-            if (keyword!=null && !keyword.trim().isEmpty()) {
+            if (keyword != null && !keyword.trim().isEmpty()) {
                 String lowerKeyword = keyword.toLowerCase();
-                if(!inv.getName().toLowerCase().contains(lowerKeyword) && !inv.getBrand().toLowerCase().contains(lowerKeyword)){
+                if (!inv.getName().toLowerCase().contains(lowerKeyword) && !inv.getBrand().toLowerCase().contains(lowerKeyword)) {
                     match = false;
                 }
             }
