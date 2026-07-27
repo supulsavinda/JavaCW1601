@@ -4,49 +4,60 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.javacw1601.controllers.MainController"
             prefHeight="600.0" prefWidth="900.0">
-    <children>
-        <VBox spacing="10.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-
-            <HBox spacing="10.0" alignment="CENTER_LEFT">
-                <Button text="Add Item" onAction="#handleOpenAddItem"/>
-                <Button text="Update Item" onAction="#handleOpenUpdateItem"/>
-                <Button text="Delete Item" onAction="#handleDeleteItem"/>
-                <Separator orientation="VERTICAL"/>
-                <Button text="Dealers" onAction="#handleOpenDealer"/>
-                <Button text="Cart" onAction="#handleOpenCart"/>
-                <Separator orientation="VERTICAL"/>
-                <Button text="Refresh" onAction="#handleRefresh"/>
-                <Button text="Exit" onAction="#handleExit"/>
-            </HBox>
-
-            <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colCode" text="Code" prefWidth="80"/>
-                    <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
-                    <TableColumn fx:id="colBrand" text="Brand" prefWidth="100"/>
-                    <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
-                    <TableColumn fx:id="colCategory" text="Category" prefWidth="120"/>
-                    <TableColumn fx:id="colDate" text="Date Added" prefWidth="100"/>
-                    <TableColumn fx:id="colQuantity" text="Qty" prefWidth="60"/>
-                    <TableColumn fx:id="colThreshold" text="Threshold" prefWidth="70"/>
-                </columns>
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                </columnResizePolicy>
-            </TableView>
-
-            <HBox spacing="20.0" alignment="CENTER_LEFT">
-                <Label fx:id="lblTotalCount" text="Total Items: 0"/>
-                <Label fx:id="lblTotalValue" text="Total Value: Rs. 0.00"/>
-                <Label fx:id="lblLowStockCount" text="Low Stock: 0"/>
-            </HBox>
-        </VBox>
-    </children>
-</AnchorPane>
+    <top>
+        <ToolBar>
+            <Button text="Dashboard" onAction="#handleDashboard"/>
+            <Button text="Inventory" onAction="#handleOpenFullInventory"/>
+            <Button text="Dealers" onAction="#handleOpenDealer"/>
+            <Button text="Cart" onAction="#handleOpenCart"/>
+            <Button text="Exit" onAction="#handleExit"/>
+        </ToolBar>
+    </top>
+    <center>
+        <StackPane fx:id="contentArea">
+            <VBox spacing="10.0">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <HBox spacing="20.0" alignment="CENTER">
+                    <VBox alignment="CENTER" style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Total Items" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblTotalCount" text="0" style="-fx-font-size: 24px;"/>
+                    </VBox>
+                    <VBox alignment="CENTER" style="-fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Total Value" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblTotalValue" text="Rs. 0.00" style="-fx-font-size: 24px;"/>
+                    </VBox>
+                    <VBox alignment="CENTER" style="-fx-border-color: #ff6666; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Low Stock Items" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblLowStockCount" text="0" style="-fx-font-size: 24px; -fx-text-fill: #cc0000;"/>
+                    </VBox>
+                </HBox>
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <Label text="Low Stock Threshold:"/>
+                    <TextField fx:id="txtThreshold" prefWidth="60" text="5"/>
+                    <Button text="Apply" onAction="#handleApplyThreshold"/>
+                    <Button text="Refresh" onAction="#handleRefresh"/>
+                </HBox>
+                <TableView fx:id="lowStockTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colImage" text="Image" prefWidth="80"/>
+                        <TableColumn fx:id="colCode" text="Code" prefWidth="80"/>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+                        <TableColumn fx:id="colBrand" text="Brand" prefWidth="100"/>
+                        <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
+                        <TableColumn fx:id="colCategory" text="Category" prefWidth="120"/>
+                        <TableColumn fx:id="colQuantity" text="Qty" prefWidth="60"/>
+                        <TableColumn fx:id="colThreshold" text="Threshold" prefWidth="70"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>
