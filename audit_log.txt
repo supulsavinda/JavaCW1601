@@ -4,3 +4,5 @@
 2026-07-27 07:32:43 | DELETE | Code: P008
 2026-07-27 14:08:24 | ADD DEALER | Code: D109 | Name: Supul | Location: Maharagama
 2026-07-27 14:08:41 | DELETE DEALER | Code: D109
+2026-07-27 14:36:47 | UPDATE | Code: P001 | New details: Bajaj 4-Stroke Piston, 15
+2026-07-27 14:44:01 | UPDATE | Code: P002 | New details: TVS King Brake Pad, 8
