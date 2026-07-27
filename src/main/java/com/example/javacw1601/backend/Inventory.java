@@ -17,7 +17,7 @@ public class Inventory {
         this.brand = brand;
         this.price = price;
         this.quantity = quantity;
-        this.category = category;
+        this.category = LegacyDataHandler.normalizeCategory(category);
         this.date = date;
         this.threshold = threshold;
         this.image = image;
@@ -62,7 +62,7 @@ public class Inventory {
         return category;
     }
     public void setCategory(String category) {
-        this.category = category;
+        this.category = LegacyDataHandler.normalizeCategory(category);
     }
 
     public String getDate() {

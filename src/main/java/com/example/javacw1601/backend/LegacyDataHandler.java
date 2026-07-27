@@ -86,6 +86,26 @@ public class LegacyDataHandler {
         return dealerList;
     }
 
+    public static String normalizeCategory(String raw) {
+        if (raw == null) return "";
+        String trimmed = raw.trim();
+        if (trimmed.isEmpty()) return trimmed;
+        StringBuilder sb = new StringBuilder();
+        boolean capitalizeNext = true;
+        for (char c : trimmed.toCharArray()) {
+            if (Character.isWhitespace(c) || c == '&' || c == '-' || c == '/') {
+                sb.append(c);
+                capitalizeNext = true;
+            } else if (capitalizeNext) {
+                sb.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+            } else {
+                sb.append(Character.toLowerCase(c));
+            }
+        }
+        return sb.toString();
+    }
+
     private static String normalizeDate(String norDate) {
         norDate = norDate.trim();
         if (norDate.isEmpty()) return "Unknown";

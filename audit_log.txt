@@ -1,1 +1,4 @@
 2026-07-27 00:22:41 | UPDATE | Code: P001 | New details: Bajaj 4-Stroke Piston, 12
+2026-07-27 07:24:22 | UPDATE DEALER | Code: D105 | New name: Nimal & Sons, Location: Malabe
+2026-07-27 07:25:13 | CHECKOUT | Total: Rs.2500.00 | Items: P002(x2) 
+2026-07-27 07:32:43 | DELETE | Code: P008
