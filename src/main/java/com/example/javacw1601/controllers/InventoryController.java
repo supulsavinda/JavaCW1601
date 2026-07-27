@@ -25,10 +25,9 @@ import java.util.ResourceBundle;
 
 public class InventoryController implements Initializable {
 
-    private static final String INVENTORY_FILE = "inventory_legacy.txt";
-
     private InventoryManager inventoryManager;
     private AuditLogger auditLogger;
+    private String dataFile;
 
     @FXML private TableView<Inventory> inventoryTable;
     @FXML private TableColumn<Inventory, String> colCode;
@@ -44,9 +43,10 @@ public class InventoryController implements Initializable {
     @FXML private Label lblTotalValue;
     @FXML private Label lblLowStockCount;
 
-    public void init(InventoryManager inventoryManager, AuditLogger auditLogger) {
+    public void init(InventoryManager inventoryManager, AuditLogger auditLogger, String dataFile) {
         this.inventoryManager = inventoryManager;
         this.auditLogger = auditLogger;
+        this.dataFile = dataFile;
         refreshTable();
     }
 
@@ -149,7 +149,7 @@ public class InventoryController implements Initializable {
             Stage stage = openModal("add-item-view.fxml", "Add New Spare Part");
             FXMLLoader loader = (FXMLLoader) stage.getUserData();
             AddItemController controller = loader.getController();
-            controller.init(inventoryManager, auditLogger, INVENTORY_FILE);
+            controller.init(inventoryManager, auditLogger, dataFile);
             stage.showAndWait();
             refreshTable();
         } catch (IOException e) {
@@ -168,7 +168,7 @@ public class InventoryController implements Initializable {
             Stage stage = openModal("update-item-view.fxml", "Update Spare Part");
             FXMLLoader loader = (FXMLLoader) stage.getUserData();
             UpdateItemController controller = loader.getController();
-            controller.init(inventoryManager, auditLogger, INVENTORY_FILE, selected);
+            controller.init(inventoryManager, auditLogger, dataFile, selected);
             stage.showAndWait();
             refreshTable();
         } catch (IOException e) {
@@ -189,7 +189,7 @@ public class InventoryController implements Initializable {
         String code = selected.getCode();
         if (inventoryManager.deleteItem(code)) {
             auditLogger.logDeleteItem(code);
-            LegacyDataHandler.saveInventory(INVENTORY_FILE, inventoryManager.getAllItems());
+            LegacyDataHandler.saveInventory(dataFile, inventoryManager.getAllItems());
             refreshTable();
             showAlert(Alert.AlertType.INFORMATION, "Deleted", "Item removed.");
         } else {

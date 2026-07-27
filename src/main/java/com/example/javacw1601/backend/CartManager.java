@@ -81,7 +81,6 @@ public class CartManager {
             item.setQuantity(item.getQuantity() - ci.getQuantity());
         }
         auditLogger.logCheckout(cart, total);
-        LegacyDataHandler.saveInventory("inventory_legacy.txt", inventoryManager.getAllItems());
         cart.clear();
         return total;
     }

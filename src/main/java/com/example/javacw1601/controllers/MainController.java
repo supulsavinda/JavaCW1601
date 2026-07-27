@@ -23,8 +23,12 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
 
-    private static final String INVENTORY_FILE = "inventory_legacy.txt";
-    private static final String DEALER_FILE = "dealers_legacy.txt";
+    // Raw legacy files: read-only source data. Never written back to.
+    private static final String INVENTORY_LEGACY_FILE = "inventory_legacy.txt";
+    private static final String DEALER_LEGACY_FILE = "dealers_legacy.txt";
+    // Clean output files: everything the app saves during a session goes here.
+    private static final String INVENTORY_DATA_FILE = "inventory_data.txt";
+    private static final String DEALER_DATA_FILE = "dealer_data.txt";
 
     private InventoryManager inventoryManager;
     private DealerManager dealerManager;
@@ -55,13 +59,18 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ArrayList<Inventory> items = LegacyDataHandler.loadItemsList(INVENTORY_FILE);
-        ArrayList<Dealers> dealers = LegacyDataHandler.loadDealersList(DEALER_FILE);
+        ArrayList<Inventory> items = LegacyDataHandler.loadItemsList(INVENTORY_LEGACY_FILE);
+        ArrayList<Dealers> dealers = LegacyDataHandler.loadDealersList(DEALER_LEGACY_FILE);
 
         inventoryManager = new InventoryManager(items);
         dealerManager = new DealerManager(dealers);
         cartManager = new CartManager(inventoryManager);
         auditLogger = new AuditLogger();
+
+        // Write out the cleaned/parsed data straight away. From this point on, every
+        // save in the app targets these files - the raw *_legacy.txt files are only ever read.
+        LegacyDataHandler.saveInventory(INVENTORY_DATA_FILE, inventoryManager.getAllItems());
+        LegacyDataHandler.saveDealers(DEALER_DATA_FILE, dealerManager.getAllDealers());
 
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -116,17 +125,17 @@ public class MainController implements Initializable {
             FXMLLoader inventoryLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/inventory-view.fxml"));
             inventoryView = inventoryLoader.load();
             InventoryController invCtrl = inventoryLoader.getController();
-            invCtrl.init(inventoryManager, auditLogger);
+            invCtrl.init(inventoryManager, auditLogger, INVENTORY_DATA_FILE);
 
             FXMLLoader dealerLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/dealer-view.fxml"));
             dealerView = dealerLoader.load();
             DealerController delCtrl = dealerLoader.getController();
-            delCtrl.init(dealerManager, auditLogger, DEALER_FILE);
+            delCtrl.init(dealerManager, auditLogger, DEALER_DATA_FILE);
 
             FXMLLoader cartLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/cart-view.fxml"));
             cartView = cartLoader.load();
             CartController cartCtrl = cartLoader.getController();
-            cartCtrl.init(cartManager, inventoryManager, INVENTORY_FILE);
+            cartCtrl.init(cartManager, inventoryManager, INVENTORY_DATA_FILE);
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Could not load views: " + e.getMessage());

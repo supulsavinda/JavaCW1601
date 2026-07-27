@@ -42,7 +42,9 @@ public class LegacyDataHandler {
     }
 
     public static ArrayList<Inventory> loadItemsList(String filePath) {
-        String[][] grid = loadData(filePath, 9);
+        // Raw legacy rows have 8 fields: code, name, brand, price, qty, category, date, image.
+        // There is no threshold column in the legacy data - every item gets the default threshold.
+        String[][] grid = loadData(filePath, 8);
         ArrayList<Inventory> itemList = new ArrayList<>();
         for (int i = 0; i < grid.length; i++) {
             try {
@@ -55,12 +57,7 @@ public class LegacyDataHandler {
                 String category = grid[i][5];
                 String dateAdded = normalizeDate(grid[i][6]);
                 int threshold = 5;
-                try {
-                    threshold = Integer.parseInt(grid[i][7].trim());
-                } catch (NumberFormatException e) {
-                    // keep default
-                }
-                String image = grid[i][8].isEmpty() ? "no_image.png" : grid[i][8];
+                String image = grid[i][7].isEmpty() ? "no_image.png" : grid[i][7];
                 itemList.add(new Inventory(partCode, name, brand, price, quantity, category, dateAdded, threshold, image));
             } catch (Exception e) {
                 System.out.println("Skipping corrupted item row at line " + (i + 1) + ": " + e.getMessage());
