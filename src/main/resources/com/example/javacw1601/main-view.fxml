@@ -13,6 +13,7 @@
             <Button text="Inventory" onAction="#handleOpenFullInventory"/>
             <Button text="Dealers" onAction="#handleOpenDealer"/>
             <Button text="Cart" onAction="#handleOpenCart"/>
+            <Button text="Audit Log" onAction="#handleOpenAuditLog"/>
             <Button text="Exit" onAction="#handleExit"/>
         </ToolBar>
     </top>

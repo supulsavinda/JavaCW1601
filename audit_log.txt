@@ -6,3 +6,4 @@
 2026-07-27 14:08:41 | DELETE DEALER | Code: D109
 2026-07-27 14:36:47 | UPDATE | Code: P001 | New details: Bajaj 4-Stroke Piston, 15
 2026-07-27 14:44:01 | UPDATE | Code: P002 | New details: TVS King Brake Pad, 8
+2026-07-27 20:49:59 | CHECKOUT | Total: Rs.42750.00 | Items: P001(x10) 

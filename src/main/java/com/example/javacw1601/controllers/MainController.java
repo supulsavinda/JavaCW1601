@@ -23,10 +23,8 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
 
-    // Raw legacy files: read-only source data. Never written back to.
     private static final String INVENTORY_LEGACY_FILE = "inventory_legacy.txt";
     private static final String DEALER_LEGACY_FILE = "dealers_legacy.txt";
-    // Clean output files: everything the app saves during a session goes here.
     private static final String INVENTORY_DATA_FILE = "inventory_data.txt";
     private static final String DEALER_DATA_FILE = "dealer_data.txt";
 
@@ -56,6 +54,8 @@ public class MainController implements Initializable {
     private Parent inventoryView;
     private Parent dealerView;
     private Parent cartView;
+    private Parent auditLogView;
+    private AuditLogController auditLogController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,8 +67,6 @@ public class MainController implements Initializable {
         cartManager = new CartManager(inventoryManager);
         auditLogger = new AuditLogger();
 
-        // Write out the cleaned/parsed data straight away. From this point on, every
-        // save in the app targets these files - the raw *_legacy.txt files are only ever read.
         LegacyDataHandler.saveInventory(INVENTORY_DATA_FILE, inventoryManager.getAllItems());
         LegacyDataHandler.saveDealers(DEALER_DATA_FILE, dealerManager.getAllDealers());
 
@@ -136,6 +134,11 @@ public class MainController implements Initializable {
             cartView = cartLoader.load();
             CartController cartCtrl = cartLoader.getController();
             cartCtrl.init(cartManager, inventoryManager, INVENTORY_DATA_FILE);
+
+            FXMLLoader auditLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/audit-log-view.fxml"));
+            auditLogView = auditLoader.load();
+            auditLogController = auditLoader.getController();
+            auditLogController.init(AuditLogger.LOG_FILE);
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Could not load views: " + e.getMessage());
@@ -219,6 +222,14 @@ public class MainController implements Initializable {
     private void handleOpenCart() {
         if (cartView != null) {
             showView(cartView);
+        }
+    }
+
+    @FXML
+    private void handleOpenAuditLog() {
+        if (auditLogView != null) {
+            auditLogController.refresh();
+            showView(auditLogView);
         }
     }
 

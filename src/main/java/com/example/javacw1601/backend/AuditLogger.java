@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class AuditLogger {
-    private static final String LOG_FILE = "audit_log.txt";
+    public static final String LOG_FILE = "audit_log.txt";
 
     private void log(String message) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(LOG_FILE, true))) {

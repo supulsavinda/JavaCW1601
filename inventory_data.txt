@@ -1,4 +1,4 @@
-P001, Bajaj 4-Stroke Piston, Bajaj, Rs.4500.00, 15, Engine, 2023-10-12, 5, piston4s.jpg
+P001, Bajaj 4-Stroke Piston, Bajaj, Rs.4500.00, 5, Engine, 2023-10-12, 5, piston4s.jpg
 P002, TVS King Brake Pad, TVS, Rs.1250.00, 8, Brakes, 2023-05-12, 5, brakepad.png
 P003, 205/50-10 Tyre, , Rs.6500.00, 24, Bodywork, 2023-10-15, 5, no_image.png
 P004, Spark Plug NGK, NGK, Rs.850.00, 50, Electrical, 2024-01-05, 5, spark.jpg
