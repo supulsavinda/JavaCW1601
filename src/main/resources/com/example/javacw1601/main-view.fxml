@@ -8,14 +8,21 @@
             fx:controller="com.example.javacw1601.controllers.MainController"
             prefHeight="600.0" prefWidth="900.0">
     <top>
-        <ToolBar>
-            <Button text="Dashboard" onAction="#handleDashboard"/>
-            <Button text="Inventory" onAction="#handleOpenFullInventory"/>
-            <Button text="Dealers" onAction="#handleOpenDealer"/>
-            <Button text="Cart" onAction="#handleOpenCart"/>
-            <Button text="Audit Log" onAction="#handleOpenAuditLog"/>
-            <Button text="Exit" onAction="#handleExit"/>
-        </ToolBar>
+        <VBox spacing="5" style="-fx-background-color: #f8f8f8; -fx-border-color: #d0d0d0; -fx-border-width: 0 0 1 0;">
+            <padding>
+                <Insets top="8" right="10" bottom="5" left="10"/>
+            </padding>
+            <Label text="Malabe Tuk-Tuk Spare Parts Depot"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <ToolBar style="-fx-background-color: transparent; -fx-padding: 0;">
+                <Button text="Dashboard" onAction="#handleDashboard"/>
+                <Button text="Inventory" onAction="#handleOpenFullInventory"/>
+                <Button text="Dealers" onAction="#handleOpenDealer"/>
+                <Button text="Cart" onAction="#handleOpenCart"/>
+                <Button text="Audit Log" onAction="#handleOpenAuditLog"/>
+                <Button text="Exit" onAction="#handleExit"/>
+            </ToolBar>
+        </VBox>
     </top>
     <center>
         <StackPane fx:id="contentArea">
