@@ -1,6 +1,9 @@
 package com.example.javacw1601.controllers;
 
-import com.example.javacw1601.backend.*;
+import com.example.javacw1601.backend.AuditLogger;
+import com.example.javacw1601.backend.Inventory;
+import com.example.javacw1601.backend.InventoryManager;
+import com.example.javacw1601.backend.LegacyDataHandler;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,7 +66,7 @@ public class InventoryController implements Initializable {
         ObservableList<String> cats = FXCollections.observableArrayList();
         cats.add("All");
         ArrayList<String> categories = inventoryManager.getCategories();
-        // simple manual sort so the dropdown is easy to scan
+
         for (int i = 0; i < categories.size() - 1; i++) {
             for (int j = 0; j < categories.size() - i - 1; j++) {
                 if (categories.get(j).compareToIgnoreCase(categories.get(j + 1)) > 0) {
@@ -126,10 +129,16 @@ public class InventoryController implements Initializable {
         });
     }
 
+    public void refresh() {
+        refreshCategoryFilter();
+        refreshTable();
+    }
+
     private void refreshTable() {
         ArrayList<Inventory> items = inventoryManager.getSortedItems();
         ObservableList<Inventory> data = FXCollections.observableArrayList(items);
         inventoryTable.setItems(data);
+        inventoryTable.refresh();
         updateSummaryLabels();
         lblSearchStatus.setText("");
     }

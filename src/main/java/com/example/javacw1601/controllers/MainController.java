@@ -31,6 +31,7 @@ public class MainController implements Initializable {
     private DealerManager dealerManager;
     private CartManager cartManager;
     private AuditLogger auditLogger;
+    private InventoryController inventoryController;
 
     @FXML private StackPane contentArea;
     @FXML private TableView<Inventory> lowStockTable;
@@ -123,8 +124,8 @@ public class MainController implements Initializable {
         try {
             FXMLLoader inventoryLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/inventory-view.fxml"));
             inventoryView = inventoryLoader.load();
-            InventoryController invCtrl = inventoryLoader.getController();
-            invCtrl.init(inventoryManager, auditLogger, INVENTORY_DATA_FILE, this::refreshDashboard);
+            inventoryController = inventoryLoader.getController();
+            inventoryController.init(inventoryManager, auditLogger, INVENTORY_DATA_FILE, this::refreshAll);
 
             FXMLLoader dealerLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/dealer-view.fxml"));
             dealerView = dealerLoader.load();
@@ -134,7 +135,7 @@ public class MainController implements Initializable {
             FXMLLoader cartLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/cart-view.fxml"));
             cartView = cartLoader.load();
             CartController cartCtrl = cartLoader.getController();
-            cartCtrl.init(cartManager, inventoryManager, INVENTORY_DATA_FILE, this::refreshDashboard);
+            cartCtrl.init(cartManager, inventoryManager, INVENTORY_DATA_FILE, this::refreshAll);
 
             FXMLLoader auditLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/audit-log-view.fxml"));
             auditLogView = auditLoader.load();
@@ -152,7 +153,15 @@ public class MainController implements Initializable {
         ArrayList<Inventory> lowItems = inventoryManager.getLowStockItems();
         ObservableList<Inventory> data = FXCollections.observableArrayList(lowItems);
         lowStockTable.setItems(data);
+        lowStockTable.refresh();
         lblLowStockCount.setText(String.valueOf(lowItems.size()));
+    }
+
+    private void refreshAll() {
+        refreshDashboard();
+        if (inventoryController != null) {
+            inventoryController.refresh();
+        }
     }
 
     private void showView(Parent view) {
@@ -203,6 +212,9 @@ public class MainController implements Initializable {
     @FXML
     private void handleOpenFullInventory() {
         if (inventoryView != null) {
+            if (inventoryController != null) {
+                inventoryController.refresh();
+            }
             showView(inventoryView);
         }
     }
