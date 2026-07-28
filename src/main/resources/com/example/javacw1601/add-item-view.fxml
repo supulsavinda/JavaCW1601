@@ -43,11 +43,8 @@
                 <Label text="Date Added:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
                 <DatePicker fx:id="dpDate" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
-                <Label text="Reorder Threshold:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-                <TextField fx:id="txtThreshold" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-
-                <Label text="Image Filename:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-                <TextField fx:id="txtImage" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                <Label text="Image Filename:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                <TextField fx:id="txtImage" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
             </GridPane>
 
             <Label fx:id="lblError" textFill="red" wrapText="true"/>

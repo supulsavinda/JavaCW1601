@@ -42,8 +42,6 @@ public class LegacyDataHandler {
     }
 
     public static ArrayList<Inventory> loadItemsList(String filePath) {
-        // Raw legacy rows have 8 fields: code, name, brand, price, qty, category, date, image.
-        // There is no threshold column in the legacy data - every item gets the default threshold.
         String[][] grid = loadData(filePath, 8);
         ArrayList<Inventory> itemList = new ArrayList<>();
         for (int i = 0; i < grid.length; i++) {
@@ -56,9 +54,30 @@ public class LegacyDataHandler {
                 int quantity = Integer.parseInt(grid[i][4]);
                 String category = grid[i][5];
                 String dateAdded = normalizeDate(grid[i][6]);
-                int threshold = 5;
                 String image = grid[i][7].isEmpty() ? "no_image.png" : grid[i][7];
-                itemList.add(new Inventory(partCode, name, brand, price, quantity, category, dateAdded, threshold, image));
+                itemList.add(new Inventory(partCode, name, brand, price, quantity, category, dateAdded, image));
+            } catch (Exception e) {
+                System.out.println("Skipping corrupted item row at line " + (i + 1) + ": " + e.getMessage());
+            }
+        }
+        return itemList;
+    }
+
+    public static ArrayList<Inventory> loadInventoryData(String filePath) {
+        String[][] grid = loadData(filePath, 8);
+        ArrayList<Inventory> itemList = new ArrayList<>();
+        for (int i = 0; i < grid.length; i++) {
+            try {
+                String partCode = grid[i][0];
+                String name = grid[i][1];
+                String brand = grid[i][2];
+                String cleanPrice = grid[i][3].replaceAll("(?i)rs\\.?\\s*", "").replaceAll("(?i)lkr\\.?\\s*", "").replaceAll("[^\\d.]", "");
+                double price = Double.parseDouble(cleanPrice);
+                int quantity = Integer.parseInt(grid[i][4]);
+                String category = grid[i][5];
+                String dateAdded = normalizeDate(grid[i][6]);
+                String image = grid[i][7].isEmpty() ? "no_image.png" : grid[i][7];
+                itemList.add(new Inventory(partCode, name, brand, price, quantity, category, dateAdded, image));
             } catch (Exception e) {
                 System.out.println("Skipping corrupted item row at line " + (i + 1) + ": " + e.getMessage());
             }
@@ -128,7 +147,7 @@ public class LegacyDataHandler {
     public static void saveInventory(String filePath, ArrayList<Inventory> items) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(filePath))) {
             for (Inventory item : items) {
-                pw.printf("%s, %s, %s, Rs.%.2f, %d, %s, %s, %d, %s%n",
+                pw.printf("%s, %s, %s, Rs.%.2f, %d, %s, %s, %s%n",
                         item.getCode(),
                         item.getName(),
                         item.getBrand(),
@@ -136,7 +155,6 @@ public class LegacyDataHandler {
                         item.getQuantity(),
                         item.getCategory(),
                         item.getDate(),
-                        item.getThreshold(),
                         item.getImage()
                 );
             }

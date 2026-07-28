@@ -29,7 +29,6 @@ public class AddItemController {
     @FXML private TextField txtQuantity;
     @FXML private ComboBox<String> cmbCategory;
     @FXML private DatePicker dpDate;
-    @FXML private TextField txtThreshold;
     @FXML private TextField txtImage;
     @FXML private Label lblError;
 
@@ -45,7 +44,6 @@ public class AddItemController {
             }
         }
         dpDate.setValue(LocalDate.now());
-        txtThreshold.setText("5");
         txtImage.setText("no_image.png");
     }
 
@@ -93,21 +91,11 @@ public class AddItemController {
             return;
         }
 
-        int threshold;
-        try {
-            String thresholdText = txtThreshold.getText() == null ? "" : txtThreshold.getText().trim();
-            threshold = thresholdText.isEmpty() ? 5 : Integer.parseInt(thresholdText);
-            if (threshold < 0) throw new NumberFormatException();
-        } catch (Exception e) {
-            lblError.setText("Enter a valid, non-negative Reorder Threshold.");
-            return;
-        }
-
         LocalDate date = dpDate.getValue() == null ? LocalDate.now() : dpDate.getValue();
         String image = txtImage.getText() == null || txtImage.getText().trim().isEmpty()
                 ? "no_image.png" : txtImage.getText().trim();
 
-        Inventory newItem = new Inventory(code, name, brand, price, quantity, category, date.toString(), threshold, image);
+        Inventory newItem = new Inventory(code, name, brand, price, quantity, category, date.toString(), image);
 
         if (inventoryManager.addItem(newItem)) {
             auditLogger.logAddItem(newItem);

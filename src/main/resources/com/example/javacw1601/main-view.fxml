@@ -41,7 +41,6 @@
                     <Label text="Low Stock Threshold:"/>
                     <TextField fx:id="txtThreshold" prefWidth="60" text="5"/>
                     <Button text="Apply" onAction="#handleApplyThreshold"/>
-                    <Button text="Refresh" onAction="#handleRefresh"/>
                 </HBox>
                 <TableView fx:id="lowStockTable" VBox.vgrow="ALWAYS">
                     <columns>
@@ -52,7 +51,6 @@
                         <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
                         <TableColumn fx:id="colCategory" text="Category" prefWidth="120"/>
                         <TableColumn fx:id="colQuantity" text="Qty" prefWidth="60"/>
-                        <TableColumn fx:id="colThreshold" text="Threshold" prefWidth="70"/>
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

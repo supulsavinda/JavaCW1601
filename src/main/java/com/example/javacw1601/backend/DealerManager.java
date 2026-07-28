@@ -22,38 +22,6 @@ public class DealerManager {
         return new ArrayList<>(allDealers);
     }
 
-    public Dealers findDealerByCode(String code) {
-        for (Dealers d : allDealers) {
-            if (d.getCode().equalsIgnoreCase(code)) {
-                return d;
-            }
-        }
-        return null;
-    }
-
-    public boolean addDealer(Dealers dealer) {
-        if (findDealerByCode(dealer.getCode()) != null) {
-            return false;
-        }
-        allDealers.add(dealer);
-        return true;
-    }
-
-    public boolean updateDealer(String code, Dealers updated) {
-        for (int i = 0; i < allDealers.size(); i++) {
-            if (allDealers.get(i).getCode().equalsIgnoreCase(code)) {
-                updated.setCode(code);
-                allDealers.set(i, updated);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean deleteDealer(String code) {
-        return allDealers.removeIf(d -> d.getCode().equalsIgnoreCase(code));
-    }
-
     public int getTotalCount() {
         return allDealers.size();
     }

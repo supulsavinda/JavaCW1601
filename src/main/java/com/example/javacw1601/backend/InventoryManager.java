@@ -111,16 +111,39 @@ public class InventoryManager {
         }
     }
 
-    public ArrayList<Inventory> getSortedItems() {
-        Set<String> categorySet = new HashSet<>();
-        for (Inventory inv : items) {
-            categorySet.add(inv.getCategory().toLowerCase());
+    private void bSortStrings(ArrayList<String> list) {
+        int n = list.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (list.get(j).compareToIgnoreCase(list.get(j + 1)) > 0) {
+                    String temp = list.get(j);
+                    list.set(j, list.get(j + 1));
+                    list.set(j + 1, temp);
+                }
+            }
         }
-        ArrayList<Inventory> result = new ArrayList<>();
+    }
 
-        for (String cat : categorySet) {
+    public ArrayList<Inventory> groupByCategoryThenCode(ArrayList<Inventory> source) {
+        ArrayList<String> categoryOrder = new ArrayList<>();
+        for (Inventory inv : source) {
+            boolean alreadyPresent = false;
+            for (String c : categoryOrder) {
+                if (c.equalsIgnoreCase(inv.getCategory())) {
+                    alreadyPresent = true;
+                    break;
+                }
+            }
+            if (!alreadyPresent) {
+                categoryOrder.add(inv.getCategory());
+            }
+        }
+        bSortStrings(categoryOrder);
+
+        ArrayList<Inventory> result = new ArrayList<>();
+        for (String cat : categoryOrder) {
             ArrayList<Inventory> sublist = new ArrayList<>();
-            for (Inventory inv : items) {
+            for (Inventory inv : source) {
                 if (inv.getCategory().equalsIgnoreCase(cat)) {
                     sublist.add(inv);
                 }
@@ -129,6 +152,10 @@ public class InventoryManager {
             result.addAll(sublist);
         }
         return result;
+    }
+
+    public ArrayList<Inventory> getSortedItems() {
+        return groupByCategoryThenCode(items);
     }
 
     public ArrayList<Inventory> search(String category, double minPrice, double maxPrice, String keyword) {

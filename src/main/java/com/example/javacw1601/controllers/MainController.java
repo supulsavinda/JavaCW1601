@@ -26,7 +26,6 @@ public class MainController implements Initializable {
     private static final String INVENTORY_LEGACY_FILE = "inventory_legacy.txt";
     private static final String DEALER_LEGACY_FILE = "dealers_legacy.txt";
     private static final String INVENTORY_DATA_FILE = "inventory_data.txt";
-    private static final String DEALER_DATA_FILE = "dealer_data.txt";
 
     private InventoryManager inventoryManager;
     private DealerManager dealerManager;
@@ -41,7 +40,6 @@ public class MainController implements Initializable {
     @FXML private TableColumn<Inventory, Double> colPrice;
     @FXML private TableColumn<Inventory, String> colCategory;
     @FXML private TableColumn<Inventory, Integer> colQuantity;
-    @FXML private TableColumn<Inventory, Integer> colThreshold;
     @FXML private TableColumn<Inventory, String> colImage;
 
     @FXML private Label lblTotalCount;
@@ -49,7 +47,6 @@ public class MainController implements Initializable {
     @FXML private Label lblLowStockCount;
     @FXML private TextField txtThreshold;
 
-    private int currentThreshold = 5;
     private Parent dashboardContent;
     private Parent inventoryView;
     private Parent dealerView;
@@ -59,7 +56,15 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ArrayList<Inventory> items = LegacyDataHandler.loadItemsList(INVENTORY_LEGACY_FILE);
+        ArrayList<Inventory> items;
+        java.io.File savedDataFile = new java.io.File(INVENTORY_DATA_FILE);
+        if (savedDataFile.exists()) {
+            items = LegacyDataHandler.loadInventoryData(INVENTORY_DATA_FILE);
+        } else {
+            items = LegacyDataHandler.loadItemsList(INVENTORY_LEGACY_FILE);
+            LegacyDataHandler.saveInventory(INVENTORY_DATA_FILE, items);
+        }
+
         ArrayList<Dealers> dealers = LegacyDataHandler.loadDealersList(DEALER_LEGACY_FILE);
 
         inventoryManager = new InventoryManager(items);
@@ -67,15 +72,11 @@ public class MainController implements Initializable {
         cartManager = new CartManager(inventoryManager);
         auditLogger = new AuditLogger();
 
-        LegacyDataHandler.saveInventory(INVENTORY_DATA_FILE, inventoryManager.getAllItems());
-        LegacyDataHandler.saveDealers(DEALER_DATA_FILE, dealerManager.getAllDealers());
-
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colBrand.setCellValueFactory(new PropertyValueFactory<>("brand"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colThreshold.setCellValueFactory(new PropertyValueFactory<>("threshold"));
 
         colPrice.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPrice()).asObject());
         colPrice.setCellFactory(col -> new TableCell<Inventory, Double>() {
@@ -113,7 +114,7 @@ public class MainController implements Initializable {
         });
 
         dashboardContent = (Parent) contentArea.getChildren().get(0);
-        txtThreshold.setText(String.valueOf(currentThreshold));
+        txtThreshold.setText(String.valueOf(inventoryManager.getLowStockThreshold()));
         refreshDashboard();
         loadOtherViews();
     }
@@ -123,17 +124,17 @@ public class MainController implements Initializable {
             FXMLLoader inventoryLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/inventory-view.fxml"));
             inventoryView = inventoryLoader.load();
             InventoryController invCtrl = inventoryLoader.getController();
-            invCtrl.init(inventoryManager, auditLogger, INVENTORY_DATA_FILE);
+            invCtrl.init(inventoryManager, auditLogger, INVENTORY_DATA_FILE, this::refreshDashboard);
 
             FXMLLoader dealerLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/dealer-view.fxml"));
             dealerView = dealerLoader.load();
             DealerController delCtrl = dealerLoader.getController();
-            delCtrl.init(dealerManager, auditLogger, DEALER_DATA_FILE);
+            delCtrl.init(dealerManager);
 
             FXMLLoader cartLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/cart-view.fxml"));
             cartView = cartLoader.load();
             CartController cartCtrl = cartLoader.getController();
-            cartCtrl.init(cartManager, inventoryManager, INVENTORY_DATA_FILE);
+            cartCtrl.init(cartManager, inventoryManager, INVENTORY_DATA_FILE, this::refreshDashboard);
 
             FXMLLoader auditLoader = new FXMLLoader(getClass().getResource("/com/example/javacw1601/audit-log-view.fxml"));
             auditLogView = auditLoader.load();
@@ -148,7 +149,7 @@ public class MainController implements Initializable {
     private void refreshDashboard() {
         lblTotalCount.setText(String.valueOf(inventoryManager.getTotalCount()));
         lblTotalValue.setText(String.format("Rs. %.2f", inventoryManager.getTotalValue()));
-        ArrayList<Inventory> lowItems = inventoryManager.getLowStockItems(currentThreshold);
+        ArrayList<Inventory> lowItems = inventoryManager.getLowStockItems();
         ObservableList<Inventory> data = FXCollections.observableArrayList(lowItems);
         lowStockTable.setItems(data);
         lblLowStockCount.setText(String.valueOf(lowItems.size()));
@@ -187,16 +188,11 @@ public class MainController implements Initializable {
         try {
             int newThreshold = Integer.parseInt(txtThreshold.getText().trim());
             if (newThreshold < 0) throw new NumberFormatException();
-            currentThreshold = newThreshold;
+            inventoryManager.setLowStockThreshold(newThreshold);
             refreshDashboard();
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Invalid Threshold", "Please enter a non-negative integer.");
         }
-    }
-
-    @FXML
-    private void handleRefresh() {
-        refreshDashboard();
     }
 
     @FXML

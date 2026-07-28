@@ -31,7 +31,6 @@ public class UpdateItemController {
     @FXML private TextField txtQuantity;
     @FXML private ComboBox<String> cmbCategory;
     @FXML private DatePicker dpDate;
-    @FXML private TextField txtThreshold;
     @FXML private TextField txtImage;
     @FXML private Label lblError;
 
@@ -55,7 +54,6 @@ public class UpdateItemController {
         txtQuantity.setText(String.valueOf(selected.getQuantity()));
         cmbCategory.setValue(selected.getCategory());
         cmbCategory.getEditor().setText(selected.getCategory());
-        txtThreshold.setText(String.valueOf(selected.getThreshold()));
         txtImage.setText(selected.getImage());
 
         try {
@@ -100,21 +98,11 @@ public class UpdateItemController {
             return;
         }
 
-        int threshold;
-        try {
-            String thresholdText = txtThreshold.getText() == null ? "" : txtThreshold.getText().trim();
-            threshold = thresholdText.isEmpty() ? 5 : Integer.parseInt(thresholdText);
-            if (threshold < 0) throw new NumberFormatException();
-        } catch (Exception e) {
-            lblError.setText("Enter a valid, non-negative Reorder Threshold.");
-            return;
-        }
-
         LocalDate date = dpDate.getValue() == null ? LocalDate.now() : dpDate.getValue();
         String image = txtImage.getText() == null || txtImage.getText().trim().isEmpty()
                 ? "no_image.png" : txtImage.getText().trim();
 
-        Inventory updated = new Inventory(originalCode, name, brand, price, quantity, category, date.toString(), threshold, image);
+        Inventory updated = new Inventory(originalCode, name, brand, price, quantity, category, date.toString(), image);
 
         if (inventoryManager.updateItem(originalCode, updated)) {
             auditLogger.logUpdateItem(originalCode, updated);

@@ -28,13 +28,15 @@ public class CartController {
     private CartManager cartManager;
     private InventoryManager inventoryManager;
     private String dataFile;
+    private Runnable onInventoryChanged;
 
     private ObservableList<CartItem> cartItemsObservable = FXCollections.observableArrayList();
 
-    public void init(CartManager cartManager, InventoryManager inventoryManager, String dataFile) {
+    public void init(CartManager cartManager, InventoryManager inventoryManager, String dataFile, Runnable onInventoryChanged) {
         this.cartManager = cartManager;
         this.inventoryManager = inventoryManager;
         this.dataFile = dataFile;
+        this.onInventoryChanged = onInventoryChanged;
 
         colCartCode.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getItem().getCode()));
@@ -163,6 +165,7 @@ public class CartController {
         double total = cartManager.checkout();
         LegacyDataHandler.saveInventory(dataFile, inventoryManager.getAllItems());
         refreshCartTable();
+        if (onInventoryChanged != null) onInventoryChanged.run();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Checkout Complete");
         alert.setHeaderText(null);
